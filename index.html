@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plano Alimentar - Recomposição</title>
+    <title>Plano Alimentar - Composição Corporal</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -30,6 +30,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        h3 {
+            color: #2a7f6e;
+            margin: 12px 0 8px;
+            font-size: 1.1rem;
         }
         .refeicao {
             display: grid;
@@ -70,17 +75,30 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
+        .tag-feito {
+            background: #d4edda;
+            color: #155724;
+        }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
-        input, select {
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        input {
             width: 100%;
             padding: 8px 12px;
             border: 1px solid #dce3ea;
             border-radius: 6px;
             font-size: 0.95rem;
+        }
+        input:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
         }
         .btn {
             background: #2a7f6e;
@@ -144,8 +162,29 @@
             border-left-color: #28a745;
         }
         .small { font-size: 0.85rem; color: #6c757d; }
+        .dados-pessoais {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 24px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        .dados-pessoais span {
+            font-weight: 600;
+            color: #2a7f6e;
+        }
+        .meta-final {
+            background: #e0f0ec;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px solid #2a7f6e;
+        }
         @media (max-width: 600px) {
             .grid-2 { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
             .refeicao { grid-template-columns: 1fr; }
         }
     </style>
@@ -154,23 +193,63 @@
 
     <!-- ===== CABEÇALHO ===== -->
     <div class="card" style="text-align:center; background:#2a7f6e; color:white; border:none;">
-        <h1 style="color:white; border:none; padding:0; margin:0;">🍽️ Meu Plano Alimentar</h1>
-        <p style="opacity:0.9; margin-top:4px;">Recomposição Corporal · 40 anos · 1,77m · 74,3kg</p>
+        <h1 style="color:white; border:none; padding:0; margin:0;">🍽️ Plano Alimentar</h1>
+        <p style="opacity:0.9; margin-top:4px;">Composição Corporal · 40 anos · 1,77m</p>
         <p style="opacity:0.8; font-size:0.9rem; margin-top:4px;">
             <span id="data-atual"></span> · <span id="dia-semana"></span>
         </p>
     </div>
 
-    <!-- ===== METAS DIÁRIAS (AJUSTÁVEIS) ===== -->
+    <!-- ===== COMPOSIÇÃO CORPORAL INICIAL ===== -->
+    <div class="card">
+        <h2>📊 Composição Corporal Inicial</h2>
+        <div class="dados-pessoais">
+            <span>📅 Data início:</span> 18/08/2026
+            <span>⚖️ Peso inicial:</span> 74,3 kg
+            <span>🧴 % Gordura inicial:</span> 22,9%
+        </div>
+
+        <h3>🎯 Meta Final</h3>
+        <div class="meta-final">
+            <div class="grid-2">
+                <div><strong>Peso alvo:</strong> 69–70 kg</div>
+                <div><strong>% Gordura alvo:</strong> 17%</div>
+            </div>
+            <div style="margin-top:8px; font-size:0.9rem; color:#4a5a6a;">
+                📅 Prazo estimado: 8–10 semanas
+            </div>
+        </div>
+
+        <h3 style="margin-top:16px;">📈 Composição Corporal Atual</h3>
+        <div class="grid-2">
+            <div>
+                <label><strong>Peso atual (kg)</strong></label>
+                <input type="number" id="peso-atual" value="74.3" step="0.1" onchange="salvarPeso()">
+            </div>
+            <div>
+                <label><strong>% Gordura atual</strong></label>
+                <input type="number" id="gordura-atual" value="22.9" step="0.1" onchange="salvarGordura()">
+            </div>
+        </div>
+        <button class="btn" onclick="salvarPesoGordura()" style="margin-top:12px;">Salvar dados atuais</button>
+        <div id="msg-salvo" style="margin-top:8px; color:#2a7f6e; font-weight:500;"></div>
+    </div>
+
+    <!-- ===== METAS DIÁRIAS (FIXAS) ===== -->
     <div class="card">
         <h2>🎯 Metas Diárias</h2>
         <div class="grid-2">
-            <div><label>Calorias (kcal)</label><input type="number" id="meta-kcal" value="1640"></div>
-            <div><label>Proteína (g)</label><input type="number" id="meta-prot" value="130"></div>
-            <div><label>Carboidratos (g)</label><input type="number" id="meta-carb" value="170"></div>
-            <div><label>Gordura (g)</label><input type="number" id="meta-gor" value="50"></div>
+            <div><strong>Calorias:</strong> 1.640 kcal</div>
+            <div><strong>Proteína:</strong> 130–150g</div>
+            <div><strong>Carboidratos:</strong> 140–170g</div>
+            <div><strong>Gordura:</strong> 45g (fixo)</div>
         </div>
-        <button class="btn" onclick="salvarMetas()" style="margin-top:12px;">Salvar Metas</button>
+        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px 24px;">
+            <span>💧 Água: 2,5L</span>
+            <span>😴 Sono: 7–8h</span>
+            <span>🏋️ Treino: 3x/semana</span>
+        </div>
+        <p class="small" style="margin-top:8px;">⛔ Metas fixas para manter o plano. Não é possível alterar.</p>
     </div>
 
     <!-- ===== PLANO ALIMENTAR ===== -->
@@ -197,12 +276,12 @@
             <div class="refeicao">
                 <span class="nome">☀️ Almoço</span>
                 <span style="text-align:right;"><span class="tag" id="status-almoco">⏳ Pendente</span></span>
-                <div class="itens">Marmita Liv Up (300g) - arroz, feijão, batata frita</div>
+                <div class="itens">Marmita (300g) - arroz, feijão, carne moída</div>
                 <div class="macros">
                     <span>🔥 369 kcal</span>
                     <span>💪 25g prot</span>
                     <span>🍞 48g carb</span>
-                    <span>🧈 8,7g gor</span>
+                    <span>🧈 9g gor</span>
                 </div>
                 <button class="btn btn-outline" onclick="marcarRefeicao('almoco')" style="grid-column:1/-1; padding:6px;">✅ Marcar como feito</button>
             </div>
@@ -225,12 +304,12 @@
             <div class="refeicao">
                 <span class="nome">🌙 Jantar</span>
                 <span style="text-align:right;"><span class="tag" id="status-jantar">⏳ Pendente</span></span>
-                <div class="itens">Marmita Liv Up (300g) - arroz, feijão, batata frita</div>
+                <div class="itens">Marmita (300g) - arroz, feijão, carne moída</div>
                 <div class="macros">
                     <span>🔥 369 kcal</span>
                     <span>💪 25g prot</span>
                     <span>🍞 48g carb</span>
-                    <span>🧈 8,7g gor</span>
+                    <span>🧈 9g gor</span>
                 </div>
                 <button class="btn btn-outline" onclick="marcarRefeicao('jantar')" style="grid-column:1/-1; padding:6px;">✅ Marcar como feito</button>
             </div>
@@ -239,10 +318,10 @@
         <!-- Totais do dia -->
         <div style="margin-top:16px; padding:12px; background:#f8fafc; border-radius:8px;">
             <div style="display:flex; flex-wrap:wrap; gap:12px 24px; justify-content:space-between;">
-                <span><strong>🔥 Calorias:</strong> <span id="total-kcal">0</span> / <span id="meta-kcal-exibida">1640</span> kcal</span>
-                <span><strong>💪 Proteína:</strong> <span id="total-prot">0</span> / <span id="meta-prot-exibida">130</span> g</span>
-                <span><strong>🍞 Carboidratos:</strong> <span id="total-carb">0</span> / <span id="meta-carb-exibida">170</span> g</span>
-                <span><strong>🧈 Gordura:</strong> <span id="total-gor">0</span> / <span id="meta-gor-exibida">50</span> g</span>
+                <span><strong>🔥 Calorias:</strong> <span id="total-kcal">0</span> / 1640 kcal</span>
+                <span><strong>💪 Proteína:</strong> <span id="total-prot">0</span> / 130–150 g</span>
+                <span><strong>🍞 Carboidratos:</strong> <span id="total-carb">0</span> / 140–170 g</span>
+                <span><strong>🧈 Gordura:</strong> <span id="total-gor">0</span> / 45 g</span>
             </div>
             <div class="progress-bar" style="margin-top:8px;">
                 <div class="progress-fill" id="progresso-kcal" style="width:0%;">0%</div>
@@ -266,7 +345,7 @@
             <tr><td>Leite em pó (30g)</td><td>110</td><td>10</td><td>12</td><td>6</td></tr>
             <tr><td>Aveia (15g)</td><td>57</td><td>2</td><td>10</td><td>1</td></tr>
             <tr><td>Whey (2 scoops ~30g)</td><td>120</td><td>24</td><td>4</td><td>2</td></tr>
-            <tr><td>Marmita Liv Up (300g)</td><td>369</td><td>25</td><td>48</td><td>8,7</td></tr>
+            <tr><td>Marmita (300g) - arroz, feijão, carne moída</td><td>369</td><td>25</td><td>48</td><td>9</td></tr>
         </table>
     </div>
 
@@ -303,9 +382,9 @@
         // ===== BASE DE DADOS DOS MACROS POR REFEIÇÃO =====
         const refeicoesMacros = {
             cafe: { kcal: 515, prot: 31, carb: 54, gor: 18 },
-            almoco: { kcal: 369, prot: 25, carb: 48, gor: 8.7 },
+            almoco: { kcal: 369, prot: 25, carb: 48, gor: 9 },
             lanche: { kcal: 385, prot: 44, carb: 34, gor: 14 },
-            jantar: { kcal: 369, prot: 25, carb: 48, gor: 8.7 }
+            jantar: { kcal: 369, prot: 25, carb: 48, gor: 9 }
         };
 
         // ===== ESTADO DAS REFEIÇÕES =====
@@ -324,7 +403,6 @@
         }
 
         function atualizarInterface() {
-            // Atualiza status visual
             const nomes = ['cafe', 'almoco', 'lanche', 'jantar'];
             let totalFeitas = 0;
             let totalKcal = 0, totalProt = 0, totalCarb = 0, totalGor = 0;
@@ -334,8 +412,7 @@
                 const btn = status.parentElement.nextElementSibling.nextElementSibling;
                 if (refeicoesFeitas[n]) {
                     status.textContent = '✅ Feito';
-                    status.style.background = '#d4edda';
-                    status.style.color = '#155724';
+                    status.className = 'tag tag-feito';
                     btn.textContent = '↩️ Desmarcar';
                     btn.style.background = '#f8d7da';
                     btn.style.borderColor = '#dc3545';
@@ -347,8 +424,7 @@
                     totalGor += refeicoesMacros[n].gor;
                 } else {
                     status.textContent = '⏳ Pendente';
-                    status.style.background = '#e0f0ec';
-                    status.style.color = '#2a7f6e';
+                    status.className = 'tag';
                     btn.textContent = '✅ Marcar como feito';
                     btn.style.background = 'transparent';
                     btn.style.borderColor = '#2a7f6e';
@@ -356,24 +432,15 @@
                 }
             });
 
-            // Atualiza totais
             document.getElementById('total-kcal').textContent = totalKcal;
             document.getElementById('total-prot').textContent = totalProt;
             document.getElementById('total-carb').textContent = totalCarb;
             document.getElementById('total-gor').textContent = totalGor;
             document.getElementById('contador-refeicoes').textContent = totalFeitas;
 
-            // Progresso das calorias
-            const metaKcal = parseInt(document.getElementById('meta-kcal').value) || 1640;
-            const pct = Math.min(100, Math.round((totalKcal / metaKcal) * 100));
+            const pct = Math.min(100, Math.round((totalKcal / 1640) * 100));
             document.getElementById('progresso-kcal').style.width = pct + '%';
             document.getElementById('progresso-kcal').textContent = pct + '%';
-
-            // Atualiza metas exibidas
-            document.getElementById('meta-kcal-exibida').textContent = metaKcal;
-            document.getElementById('meta-prot-exibida').textContent = document.getElementById('meta-prot').value || 130;
-            document.getElementById('meta-carb-exibida').textContent = document.getElementById('meta-carb').value || 170;
-            document.getElementById('meta-gor-exibida').textContent = document.getElementById('meta-gor').value || 50;
         }
 
         // ===== SALVAR E CARREGAR ESTADO =====
@@ -389,29 +456,29 @@
             atualizarInterface();
         }
 
-        // ===== METAS =====
-        function salvarMetas() {
-            const metas = {
-                kcal: document.getElementById('meta-kcal').value,
-                prot: document.getElementById('meta-prot').value,
-                carb: document.getElementById('meta-carb').value,
-                gor: document.getElementById('meta-gor').value
-            };
-            localStorage.setItem('metas', JSON.stringify(metas));
-            atualizarInterface();
-            alert('✅ Metas salvas com sucesso!');
+        // ===== PESO E GORDURA =====
+        function salvarPeso() {
+            const peso = document.getElementById('peso-atual').value;
+            if (peso) localStorage.setItem('pesoAtual', peso);
         }
 
-        function carregarMetas() {
-            const dados = localStorage.getItem('metas');
-            if (dados) {
-                const metas = JSON.parse(dados);
-                document.getElementById('meta-kcal').value = metas.kcal || 1640;
-                document.getElementById('meta-prot').value = metas.prot || 130;
-                document.getElementById('meta-carb').value = metas.carb || 170;
-                document.getElementById('meta-gor').value = metas.gor || 50;
-            }
-            atualizarInterface();
+        function salvarGordura() {
+            const gordura = document.getElementById('gordura-atual').value;
+            if (gordura) localStorage.setItem('gorduraAtual', gordura);
+        }
+
+        function carregarPesoGordura() {
+            const peso = localStorage.getItem('pesoAtual');
+            const gordura = localStorage.getItem('gorduraAtual');
+            if (peso) document.getElementById('peso-atual').value = peso;
+            if (gordura) document.getElementById('gordura-atual').value = gordura;
+        }
+
+        function salvarPesoGordura() {
+            salvarPeso();
+            salvarGordura();
+            document.getElementById('msg-salvo').textContent = '✅ Dados salvos com sucesso!';
+            setTimeout(() => { document.getElementById('msg-salvo').textContent = ''; }, 3000);
         }
 
         // ===== CHECKLIST =====
@@ -453,21 +520,16 @@
         // ===== RELATÓRIO SEMANAL =====
         function gerarRelatorio() {
             const hoje = new Date();
-            const diaSemana = hoje.getDay(); // 0=domingo, 6=sábado
+            const diaSemana = hoje.getDay();
             const refeicoes = Object.values(refeicoesFeitas).filter(v => v).length;
             const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
             const habitos = Array.from(checkboxes).filter(cb => cb.checked).length;
 
             const container = document.getElementById('relatorio-container');
-            let html = '';
+            const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
             if (diaSemana === 6) {
-                // Sábado - relatório completo
-                const totalDias = 7;
-                const mediaRefeicoes = refeicoes; // simplificado
-                const mediaHabitos = habitos;
-
-                html = `
+                container.innerHTML = `
                     <div class="relatorio relatorio-ok">
                         <strong>📊 Relatório Semanal (Sábado)</strong><br>
                         ✅ Refeições feitas: ${refeicoes} de 28 (${Math.round((refeicoes/28)*100)}%)<br>
@@ -476,18 +538,17 @@
                     </div>
                 `;
             } else {
-                html = `
+                container.innerHTML = `
                     <div class="relatorio">
-                        ⏳ Hoje é ${['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'][diaSemana]}.<br>
+                        ⏳ Hoje é ${dias[diaSemana]}.<br>
                         Volte no <strong>sábado</strong> para ver o relatório completo da semana.<br>
                         <span style="font-size:0.85rem;">Até agora: ${refeicoes} refeições feitas hoje · ${habitos} hábitos cumpridos.</span>
                     </div>
                 `;
             }
-            container.innerHTML = html;
         }
 
-        // ===== DATA E DIA DA SEMANA =====
+        // ===== DATA =====
         function atualizarData() {
             const hoje = new Date();
             const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -500,14 +561,12 @@
         // ===== INICIALIZAÇÃO =====
         document.addEventListener('DOMContentLoaded', function() {
             atualizarData();
-            carregarMetas();
+            carregarPesoGordura();
             carregarEstado();
             carregarChecklist();
             gerarRelatorio();
 
-            // Verifica se é sábado para gerar relatório automaticamente
-            const hoje = new Date();
-            if (hoje.getDay() === 6) {
+            if (new Date().getDay() === 6) {
                 gerarRelatorio();
             }
         });
