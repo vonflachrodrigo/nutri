@@ -1,1 +1,501 @@
-...
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano Alimentar - Recomposição Corporal</title>
+    <style>
+        /* ===== RESET E VARIAVEIS ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #f4f6f9;
+            --card: #ffffff;
+            --primary: #2a7f6e;
+            --primary-light: #e0f0ec;
+            --text: #1e2a3a;
+            --text-light: #4a5a6a;
+            --border: #dce3ea;
+            --shadow: 0 4px 12px rgba(0,0,0,0.06);
+            --radius: 12px;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        /* ===== CARD ===== */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        .card h2, .card h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h2 { font-size: 1.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 10px; }
+        .card h3 { font-size: 1.2rem; margin-top: 8px; }
+
+        /* ===== TABELAS ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        tr:hover { background: #f8fafc; }
+
+        /* ===== FORMULARIOS ===== */
+        select, input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: white;
+            transition: 0.2s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42,127,110,0.15);
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1f6455; transform: scale(1.01); }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-outline:hover { background: var(--primary-light); }
+
+        /* ===== RESULTADO ===== */
+        .result-box {
+            background: var(--primary-light);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 40px;
+        }
+        .result-item {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+        .result-item strong {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .result-item .value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        /* ===== CHECKLIST ===== */
+        .checklist {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 32px;
+            margin: 8px 0 4px;
+        }
+        .checklist label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* ===== PROGRESSO ===== */
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 20px;
+            height: 22px;
+            overflow: hidden;
+            margin: 6px 0 12px;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            color: white;
+            text-align: right;
+            padding-right: 8px;
+            line-height: 22px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            width: 0%;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 480px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .result-box { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== CABEÇALHO ===== -->
+    <div class="card" style="text-align:center; background:var(--primary); color:white; border:none;">
+        <h1 style="color:white; border:none; padding:0; margin:0;">🍽️ Plano Alimentar</h1>
+        <p style="margin:4px 0 0; opacity:0.9;">Recomposição Corporal · 40 anos · 1,77m · 74,3kg · 22,9% gordura</p>
+    </div>
+
+    <!-- ===== METAS ===== -->
+    <div class="card">
+        <h2>🎯 Metas Diárias</h2>
+        <div class="grid-2">
+            <div><strong>Calorias:</strong> 1.640 kcal</div>
+            <div><strong>Proteína:</strong> 130–150g</div>
+            <div><strong>Gordura:</strong> 45–55g</div>
+            <div><strong>Carboidratos:</strong> 140–170g</div>
+        </div>
+        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px 24px;">
+            <span>💧 Água: 2,5L</span>
+            <span>😴 Sono: 7–8h</span>
+            <span>🏋️ Treino: 3x/semana</span>
+        </div>
+    </div>
+
+    <!-- ===== MONTADOR DO DIA ===== -->
+    <div class="card" id="montador">
+        <h2>📋 Monte seu Dia</h2>
+        <p style="color:var(--text-light); margin-bottom:16px;">Escolha uma opção para cada refeição.</p>
+
+        <div class="grid-2">
+            <div>
+                <label><strong>Café da manhã</strong></label>
+                <select id="cafe">
+                    <option value="A">A – 430kcal · 28g prot · 48g carb · 14g gor</option>
+                    <option value="B">B – 420kcal · 26g prot · 50g carb · 12g gor</option>
+                    <option value="C">C – 445kcal · 30g prot · 46g carb · 15g gor</option>
+                </select>
+            </div>
+            <div>
+                <label><strong>Almoço</strong></label>
+                <select id="almoco">
+                    <option value="A">A – 480kcal · 24g prot · 58g carb · 13g gor</option>
+                    <option value="B">B – 470kcal · 22g prot · 55g carb · 14g gor</option>
+                    <option value="C">C – 460kcal · 20g prot · 60g carb · 12g gor</option>
+                </select>
+            </div>
+            <div>
+                <label><strong>Lanche da tarde</strong></label>
+                <select id="lanche">
+                    <option value="A">A – 220kcal · 35g prot · 12g carb · 5g gor</option>
+                    <option value="B">B – 230kcal · 32g prot · 15g carb · 6g gor</option>
+                    <option value="C">C – 240kcal · 30g prot · 18g carb · 7g gor</option>
+                </select>
+            </div>
+            <div>
+                <label><strong>Jantar</strong></label>
+                <select id="jantar">
+                    <option value="A">A – 490kcal · 24g prot · 55g carb · 14g gor</option>
+                    <option value="B">B – 500kcal · 26g prot · 58g carb · 15g gor</option>
+                    <option value="C">C – 480kcal · 22g prot · 52g carb · 13g gor</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calcularTotal()" style="margin-top:16px;">Calcular totais do dia</button>
+
+        <div id="resultado" class="result-box" style="display:none;"></div>
+        <div id="alerta" class="alert" style="display:none;"></div>
+    </div>
+
+    <!-- ===== CHECKLIST DIÁRIO ===== -->
+    <div class="card">
+        <h2>✅ Checklist de Hábitos</h2>
+        <div class="checklist">
+            <label><input type="checkbox" onchange="salvarChecklist()"> 💧 2,5L de água</label>
+            <label><input type="checkbox" onchange="salvarChecklist()"> 😴 7–8h de sono</label>
+            <label><input type="checkbox" onchange="salvarChecklist()"> 🏋️ Treino realizado</label>
+            <label><input type="checkbox" onchange="salvarChecklist()"> 🥗 Bateu metas do dia</label>
+        </div>
+        <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-outline" onclick="resetarChecklist()" style="width:auto; padding:8px 20px;">Resetar</button>
+            <span id="progresso-texto" style="align-self:center; font-weight:500;">Progresso: 0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progresso-bar" style="width:0%;">0%</div>
+        </div>
+    </div>
+
+    <!-- ===== TABELAS DE REFERÊNCIA ===== -->
+    <div class="card">
+        <h2>📚 Tabelas de Referência</h2>
+
+        <h3>Café da manhã</h3>
+        <table>
+            <tr><th>Opção</th><th>Itens</th><th>kcal</th><th>Prot</th><th>Carb</th><th>Gor</th></tr>
+            <tr><td>A</td><td>2 ovos mexidos + 1 fatia pão integral + 1 banana + 15g aveia + 30g requeijão light</td><td>430</td><td>28</td><td>48</td><td>14</td></tr>
+            <tr><td>B</td><td>1 scoop whey + 200ml leite desnatado + 30g aveia + 1 maçã + 1 colher mel</td><td>420</td><td>26</td><td>50</td><td>12</td></tr>
+            <tr><td>C</td><td>3 ovos cozidos + 1 tapioca média (40g) + 1 fatia queijo branco (30g) + 1 laranja</td><td>445</td><td>30</td><td>46</td><td>15</td></tr>
+        </table>
+
+        <h3>Almoço</h3>
+        <table>
+            <tr><th>Opção</th><th>Itens</th><th>kcal</th><th>Prot</th><th>Carb</th><th>Gor</th></tr>
+            <tr><td>A</td><td>150g frango grelhado + 150g arroz branco + 100g feijão carioca + salada com 1 fio azeite</td><td>480</td><td>24</td><td>58</td><td>13</td></tr>
+            <tr><td>B</td><td>150g carne moída magra + 1 batata assada (150g) + brócolis</td><td>470</td><td>22</td><td>55</td><td>14</td></tr>
+            <tr><td>C</td><td>2 latas atum em água + 200g batata doce cozida + salada alface/tomate com limão</td><td>460</td><td>20</td><td>60</td><td>12</td></tr>
+        </table>
+
+        <h3>Lanche da tarde</h3>
+        <table>
+            <tr><th>Opção</th><th>Itens</th><th>kcal</th><th>Prot</th><th>Carb</th><th>Gor</th></tr>
+            <tr><td>A</td><td>1,5 scoop whey + 200ml leite desnatado</td><td>220</td><td>35</td><td>12</td><td>5</td></tr>
+            <tr><td>B</td><td>1 scoop whey + 200ml leite integral + 10g aveia</td><td>230</td><td>32</td><td>15</td><td>6</td></tr>
+            <tr><td>C</td><td>200g iogurte grego + 10g pasta amendoim + 1 banana pequena</td><td>240</td><td>30</td><td>18</td><td>7</td></tr>
+        </table>
+
+        <h3>Jantar</h3>
+        <table>
+            <tr><th>Opção</th><th>Itens</th><th>kcal</th><th>Prot</th><th>Carb</th><th>Gor</th></tr>
+            <tr><td>A</td><td>3 ovos em omelete + 100g batata doce + 1 colher requeijão light</td><td>490</td><td>24</td><td>55</td><td>14</td></tr>
+            <tr><td>B</td><td>150g filé frango grelhado + 200g legumes salteados + 80g arroz integral</td><td>500</td><td>26</td><td>58</td><td>15</td></tr>
+            <tr><td>C</td><td>150g tilápia/salmão grelhado + salada verde + 150g mandioca cozida</td><td>480</td><td>22</td><td>52</td><td>13</td></tr>
+        </table>
+
+        <h3>Esquenta extra (opcional)</h3>
+        <table>
+            <tr><th>Item</th><th>kcal</th><th>Prot</th></tr>
+            <tr><td>10g castanhas (2–3 unidades)</td><td>100</td><td>3</td></tr>
+            <tr><td>1 ovo cozido</td><td>75</td><td>6</td></tr>
+            <tr><td>1 fruta (maçã, pera ou mexerica)</td><td>70</td><td>1</td></tr>
+            <tr><td>20g pasta amendoim + 1 bolacha integral</td><td>150</td><td>5</td></tr>
+        </table>
+    </div>
+
+    <!-- ===== ACOMPANHAMENTO ===== -->
+    <div class="card">
+        <h2>📈 Acompanhamento</h2>
+        <div class="grid-2">
+            <div>
+                <label><strong>Peso atual (kg)</strong></label>
+                <input type="number" id="peso" value="74.3" step="0.1" onchange="salvarPeso()">
+            </div>
+            <div>
+                <label><strong>% Gordura atual</strong></label>
+                <input type="number" id="gordura" value="22.9" step="0.1" onchange="salvarGordura()">
+            </div>
+        </div>
+        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px 24px;">
+            <span><strong>Prazo estimado:</strong> 8–10 semanas para 69–70kg</span>
+            <span><strong>Meta:</strong> 17% de gordura</span>
+        </div>
+        <button class="btn" onclick="salvarAcompanhamento()">Salvar dados</button>
+        <div id="msg-salvo" style="margin-top:8px; color:var(--primary); font-weight:500;"></div>
+    </div>
+
+    <script>
+        // ===== BASE DE DADOS (macros por opção) =====
+        const macros = {
+            cafe: {
+                A: { kcal: 430, prot: 28, carb: 48, gor: 14 },
+                B: { kcal: 420, prot: 26, carb: 50, gor: 12 },
+                C: { kcal: 445, prot: 30, carb: 46, gor: 15 }
+            },
+            almoco: {
+                A: { kcal: 480, prot: 24, carb: 58, gor: 13 },
+                B: { kcal: 470, prot: 22, carb: 55, gor: 14 },
+                C: { kcal: 460, prot: 20, carb: 60, gor: 12 }
+            },
+            lanche: {
+                A: { kcal: 220, prot: 35, carb: 12, gor: 5 },
+                B: { kcal: 230, prot: 32, carb: 15, gor: 6 },
+                C: { kcal: 240, prot: 30, carb: 18, gor: 7 }
+            },
+            jantar: {
+                A: { kcal: 490, prot: 24, carb: 55, gor: 14 },
+                B: { kcal: 500, prot: 26, carb: 58, gor: 15 },
+                C: { kcal: 480, prot: 22, carb: 52, gor: 13 }
+            }
+        };
+
+        // Metas (faixas)
+        const meta = {
+            kcal: { min: 1540, max: 1740 },  // 1640 ±100
+            prot: { min: 130, max: 150 },
+            gor: { min: 45, max: 55 },
+            carb: { min: 140, max: 170 }
+        };
+
+        // ===== CALCULAR TOTAL =====
+        function calcularTotal() {
+            const cafe = document.getElementById('cafe').value;
+            const almoco = document.getElementById('almoco').value;
+            const lanche = document.getElementById('lanche').value;
+            const jantar = document.getElementById('jantar').value;
+
+            const total = {
+                kcal: macros.cafe[cafe].kcal + macros.almoco[almoco].kcal + macros.lanche[lanche].kcal + macros.jantar[jantar].kcal,
+                prot: macros.cafe[cafe].prot + macros.almoco[almoco].prot + macros.lanche[lanche].prot + macros.jantar[jantar].prot,
+                carb: macros.cafe[cafe].carb + macros.almoco[almoco].carb + macros.lanche[lanche].carb + macros.jantar[jantar].carb,
+                gor: macros.cafe[cafe].gor + macros.almoco[almoco].gor + macros.lanche[lanche].gor + macros.jantar[jantar].gor
+            };
+
+            const res = document.getElementById('resultado');
+            res.style.display = 'flex';
+            res.innerHTML = `
+                <div class="result-item"><strong>Calorias:</strong> <span class="value">${total.kcal}</span> kcal (meta ~1640)</div>
+                <div class="result-item"><strong>Proteína:</strong> <span class="value">${total.prot}</span> g (meta 130–150)</div>
+                <div class="result-item"><strong>Carboidratos:</strong> <span class="value">${total.carb}</span> g (meta 140–170)</div>
+                <div class="result-item"><strong>Gordura:</strong> <span class="value">${total.gor}</span> g (meta 45–55)</div>
+            `;
+
+            // Alertas
+            const alerta = document.getElementById('alerta');
+            let msgs = [];
+            if (total.kcal < meta.kcal.min) msgs.push('⚠️ Calorias abaixo do ideal (mínimo 1540)');
+            if (total.kcal > meta.kcal.max) msgs.push('⚠️ Calorias acima do ideal (máximo 1740)');
+            if (total.prot < meta.prot.min) msgs.push('⚠️ Proteína abaixo do mínimo (130g) — aumente whey ou adicione 1 ovo');
+            if (total.prot > meta.prot.max) msgs.push('ℹ️ Proteína acima da faixa, mas ok se for de fontes magras');
+            if (total.gor < meta.gor.min) msgs.push('⚠️ Gordura baixa — adicione 1 colher de azeite ou castanhas');
+            if (total.gor > meta.gor.max) msgs.push('⚠️ Gordura alta — prefira preparações mais leves');
+            if (total.carb < meta.carb.min) msgs.push('⚠️ Carboidratos baixos — adicione fruta ou aveia');
+            if (total.carb > meta.carb.max) msgs.push('⚠️ Carboidratos altos — reduza arroz/batata');
+
+            if (msgs.length === 0) {
+                alerta.style.display = 'block';
+                alerta.style.background = '#d4edda';
+                alerta.style.borderLeftColor = '#28a745';
+                alerta.innerHTML = '✅ Todos os macros estão dentro da meta! Bom dia!';
+            } else {
+                alerta.style.display = 'block';
+                alerta.style.background = '#fff3cd';
+                alerta.style.borderLeftColor = '#ffc107';
+                alerta.innerHTML = msgs.join('<br>');
+            }
+        }
+
+        // ===== CHECKLIST =====
+        function atualizarProgresso() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const total = checkboxes.length;
+            const marcados = document.querySelectorAll('.checklist input[type="checkbox"]:checked').length;
+            const pct = total > 0 ? Math.round((marcados / total) * 100) : 0;
+            document.getElementById('progresso-bar').style.width = pct + '%';
+            document.getElementById('progresso-bar').textContent = pct + '%';
+            document.getElementById('progresso-texto').textContent = `Progresso: ${pct}% (${marcados}/${total})`;
+        }
+
+        function salvarChecklist() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            const estados = Array.from(checkboxes).map(cb => cb.checked);
+            localStorage.setItem('checklist', JSON.stringify(estados));
+            atualizarProgresso();
+        }
+
+        function carregarChecklist() {
+            const dados = localStorage.getItem('checklist');
+            if (dados) {
+                const estados = JSON.parse(dados);
+                const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+                checkboxes.forEach((cb, i) => {
+                    if (estados[i] !== undefined) cb.checked = estados[i];
+                });
+            }
+            atualizarProgresso();
+        }
+
+        function resetarChecklist() {
+            const checkboxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+            salvarChecklist();
+        }
+
+        // ===== ACOMPANHAMENTO (peso/gordura) =====
+        function salvarPeso() {
+            const peso = document.getElementById('peso').value;
+            if (peso) localStorage.setItem('peso', peso);
+        }
+
+        function salvarGordura() {
+            const gordura = document.getElementById('gordura').value;
+            if (gordura) localStorage.setItem('gordura', gordura);
+        }
+
+        function carregarPesoGordura() {
+            const peso = localStorage.getItem('peso');
+            const gordura = localStorage.getItem('gordura');
+            if (peso) document.getElementById('peso').value = peso;
+            if (gordura) document.getElementById('gordura').value = gordura;
+        }
+
+        function salvarAcompanhamento() {
+            salvarPeso();
+            salvarGordura();
+            document.getElementById('msg-salvo').textContent = '✅ Dados salvos com sucesso!';
+            setTimeout(() => { document.getElementById('msg-salvo').textContent = ''; }, 3000);
+        }
+
+        // ===== INICIALIZAÇÃO =====
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarChecklist();
+            carregarPesoGordura();
+            // Calcula total automaticamente com as opções padrão
+            calcularTotal();
+        });
+    </script>
+
+</body>
+</html>
