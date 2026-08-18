@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -108,6 +107,21 @@
         }
         .btn-outline:hover { background: var(--primary-light); }
 
+        /* ===== BOTÃO SELECIONAR ===== */
+        .btn-selecionar {
+            margin-top: 8px;
+            width: 100%;
+            padding: 6px;
+            background: #e0f0ec;
+            border: 1px solid #2a7f6e;
+            border-radius: 6px;
+            color: #2a7f6e;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-selecionar:hover { transform: scale(1.02); }
+
         /* ===== RESULTADO ===== */
         .result-box {
             background: var(--primary-light);
@@ -183,6 +197,20 @@
             width: 0%;
         }
 
+        /* ===== CONTADOR ===== */
+        .contador-refeicoes {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .contador-refeicoes span {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
         /* ===== RESPONSIVO ===== */
         @media (max-width: 480px) {
             body { padding: 12px; }
@@ -218,7 +246,7 @@
     <!-- ===== MONTADOR DO DIA ===== -->
     <div class="card" id="montador">
         <h2>📋 Monte seu Dia</h2>
-        <p style="color:var(--text-light); margin-bottom:16px;">Escolha uma opção para cada refeição.</p>
+        <p style="color:var(--text-light); margin-bottom:16px;">Escolha uma opção para cada refeição e marque quando comer.</p>
 
         <div class="grid-2">
             <div>
@@ -228,6 +256,8 @@
                     <option value="B">B – 420kcal · 26g prot · 50g carb · 12g gor</option>
                     <option value="C">C – 445kcal · 30g prot · 46g carb · 15g gor</option>
                 </select>
+                <button class="btn-selecionar" onclick="marcarRefeicao('cafe')">✅ Selecionar</button>
+                <span id="status-cafe" style="display:block; text-align:center; font-size:0.8rem; color:#4a5a6a; margin-top:4px;">⏳ Pendente</span>
             </div>
             <div>
                 <label><strong>Almoço</strong></label>
@@ -236,6 +266,8 @@
                     <option value="B">B – 470kcal · 22g prot · 55g carb · 14g gor</option>
                     <option value="C">C – 460kcal · 20g prot · 60g carb · 12g gor</option>
                 </select>
+                <button class="btn-selecionar" onclick="marcarRefeicao('almoco')">✅ Selecionar</button>
+                <span id="status-almoco" style="display:block; text-align:center; font-size:0.8rem; color:#4a5a6a; margin-top:4px;">⏳ Pendente</span>
             </div>
             <div>
                 <label><strong>Lanche da tarde</strong></label>
@@ -244,6 +276,8 @@
                     <option value="B">B – 230kcal · 32g prot · 15g carb · 6g gor</option>
                     <option value="C">C – 240kcal · 30g prot · 18g carb · 7g gor</option>
                 </select>
+                <button class="btn-selecionar" onclick="marcarRefeicao('lanche')">✅ Selecionar</button>
+                <span id="status-lanche" style="display:block; text-align:center; font-size:0.8rem; color:#4a5a6a; margin-top:4px;">⏳ Pendente</span>
             </div>
             <div>
                 <label><strong>Jantar</strong></label>
@@ -252,6 +286,8 @@
                     <option value="B">B – 500kcal · 26g prot · 58g carb · 15g gor</option>
                     <option value="C">C – 480kcal · 22g prot · 52g carb · 13g gor</option>
                 </select>
+                <button class="btn-selecionar" onclick="marcarRefeicao('jantar')">✅ Selecionar</button>
+                <span id="status-jantar" style="display:block; text-align:center; font-size:0.8rem; color:#4a5a6a; margin-top:4px;">⏳ Pendente</span>
             </div>
         </div>
 
@@ -259,6 +295,10 @@
 
         <div id="resultado" class="result-box" style="display:none;"></div>
         <div id="alerta" class="alert" style="display:none;"></div>
+        
+        <div class="contador-refeicoes">
+            🍽️ Refeições feitas: <span id="contador-refeicoes">0</span> de 4
+        </div>
     </div>
 
     <!-- ===== CHECKLIST DIÁRIO ===== -->
@@ -373,7 +413,7 @@
 
         // Metas (faixas)
         const meta = {
-            kcal: { min: 1540, max: 1740 },  // 1640 ±100
+            kcal: { min: 1540, max: 1740 },
             prot: { min: 130, max: 150 },
             gor: { min: 45, max: 55 },
             carb: { min: 140, max: 170 }
@@ -402,7 +442,6 @@
                 <div class="result-item"><strong>Gordura:</strong> <span class="value">${total.gor}</span> g (meta 45–55)</div>
             `;
 
-            // Alertas
             const alerta = document.getElementById('alerta');
             let msgs = [];
             if (total.kcal < meta.kcal.min) msgs.push('⚠️ Calorias abaixo do ideal (mínimo 1540)');
@@ -424,6 +463,68 @@
                 alerta.style.background = '#fff3cd';
                 alerta.style.borderLeftColor = '#ffc107';
                 alerta.innerHTML = msgs.join('<br>');
+            }
+        }
+
+        // ===== MARCAR REFEIÇÃO =====
+        function marcarRefeicao(refeicao) {
+            const statusSpan = document.getElementById(`status-${refeicao}`);
+            const botao = statusSpan.previousElementSibling;
+            
+            if (statusSpan.textContent.includes('✅')) {
+                statusSpan.innerHTML = '⏳ Pendente';
+                botao.style.background = '#e0f0ec';
+                botao.style.color = '#2a7f6e';
+                botao.textContent = '✅ Selecionar';
+            } else {
+                statusSpan.innerHTML = '✅ Feito!';
+                botao.style.background = '#2a7f6e';
+                botao.style.color = 'white';
+                botao.textContent = '↩️ Desmarcar';
+            }
+            
+            atualizarContadorRefeicoes();
+            salvarEstadoRefeicoes();
+        }
+
+        function atualizarContadorRefeicoes() {
+            const refeicoes = ['cafe', 'almoco', 'lanche', 'jantar'];
+            let feitas = 0;
+            refeicoes.forEach(ref => {
+                const status = document.getElementById(`status-${ref}`);
+                if (status && status.textContent.includes('✅ Feito!')) {
+                    feitas++;
+                }
+            });
+            document.getElementById('contador-refeicoes').textContent = feitas;
+        }
+
+        function salvarEstadoRefeicoes() {
+            const refeicoes = ['cafe', 'almoco', 'lanche', 'jantar'];
+            const estado = {};
+            refeicoes.forEach(ref => {
+                const status = document.getElementById(`status-${ref}`);
+                estado[ref] = status ? status.textContent.includes('✅ Feito!') : false;
+            });
+            localStorage.setItem('refeicoes', JSON.stringify(estado));
+        }
+
+        function carregarEstadoRefeicoes() {
+            const dados = localStorage.getItem('refeicoes');
+            if (dados) {
+                const estado = JSON.parse(dados);
+                const refeicoes = ['cafe', 'almoco', 'lanche', 'jantar'];
+                refeicoes.forEach(ref => {
+                    if (estado[ref]) {
+                        const statusSpan = document.getElementById(`status-${ref}`);
+                        const botao = statusSpan.previousElementSibling;
+                        statusSpan.innerHTML = '✅ Feito!';
+                        botao.style.background = '#2a7f6e';
+                        botao.style.color = 'white';
+                        botao.textContent = '↩️ Desmarcar';
+                    }
+                });
+                atualizarContadorRefeicoes();
             }
         }
 
@@ -492,7 +593,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             carregarChecklist();
             carregarPesoGordura();
-            // Calcula total automaticamente com as opções padrão
+            carregarEstadoRefeicoes();
             calcularTotal();
         });
     </script>
