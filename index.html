@@ -152,6 +152,13 @@
             font-size: 0.85rem;
             color: #6c757d;
         }
+        .meta-fibra {
+            background: #e8f5e9;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
         @media (max-width: 600px) {
             .grid-2 {
                 grid-template-columns: 1fr;
@@ -173,7 +180,7 @@
     <!-- ===== CABEÇALHO ===== -->
     <div class="card" style="text-align:center; background:#2a7f6e; color:white; border:none;">
         <h1 style="color:white; border:none; padding:0; margin:0;">🍽️ Plano Alimentar</h1>
-        <p style="opacity:0.9; margin-top:4px;">Composição Corporal · 40 anos · 1,77m</p>
+        <p style="opacity:0.9; margin-top:4px;">Composição Corporal · <span id="perfil-idade"></span> anos · <span id="perfil-altura"></span></p>
         <p style="opacity:0.8; font-size:0.9rem; margin-top:4px;">
             <span id="data-atual"></span>
         </p>
@@ -183,19 +190,19 @@
     <div class="card">
         <h2>📊 Composição Corporal</h2>
         <div class="dados-pessoais">
-            <span>📅 Data início:</span> 18/08/2026
-            <span>⚖️ Peso inicial:</span> 74,3 kg
-            <span>🧴 % Gordura inicial:</span> 22,9%
+            <span>📅 Data início:</span> <span id="perfil-dataInicio"></span>
+            <span>⚖️ Peso inicial:</span> <span id="perfil-pesoInicial"></span> kg
+            <span>🧴 % Gordura inicial:</span> <span id="perfil-gorduraInicial"></span>%
         </div>
 
         <h3>🎯 Meta Final</h3>
         <div class="meta-final">
             <div class="grid-2">
-                <div><strong>Peso alvo:</strong> 69–70 kg</div>
-                <div><strong>% Gordura alvo:</strong> 17%</div>
+                <div><strong>Peso alvo:</strong> <span id="perfil-pesoAlvo"></span> kg</div>
+                <div><strong>% Gordura alvo:</strong> <span id="perfil-gorduraAlvo"></span>%</div>
             </div>
             <div style="margin-top:8px; font-size:0.9rem; color:#4a5a6a;">
-                📅 Prazo estimado: 9–12 semanas
+                📅 Prazo estimado: <span id="perfil-prazo"></span>
             </div>
         </div>
 
@@ -204,11 +211,11 @@
         <div class="grid-2" style="margin-top:8px;">
             <div>
                 <label><strong>Peso atual (kg)</strong></label>
-                <input type="number" id="peso-atual" value="74.3" step="0.1" onchange="salvarPeso()">
+                <input type="number" id="peso-atual" step="0.1" onchange="salvarPeso()">
             </div>
             <div>
                 <label><strong>% Gordura atual</strong></label>
-                <input type="number" id="gordura-atual" value="22.9" step="0.1" onchange="salvarGordura()">
+                <input type="number" id="gordura-atual" step="0.1" onchange="salvarGordura()">
             </div>
         </div>
         <button class="btn" onclick="salvarPesoGordura()" style="margin-top:12px;">Salvar dados</button>
@@ -216,21 +223,16 @@
     </div>
 
     <!-- ===== METAS DIÁRIAS (FIXAS) ===== -->
-    <div class="card">
+    <div class="card" id="metas-container">
         <h2>🎯 Metas Diárias</h2>
-        <div class="grid-2">
-            <div><strong>Calorias:</strong> 1.584 kcal</div>
-            <div><strong>Proteína:</strong> 130–150g</div>
-            <div><strong>Carboidratos:</strong> 140–170g</div>
-            <div><strong>Gordura:</strong> 45g</div>
+        <div class="grid-2" id="metas-lista">
+            <!-- Preenchido pelo JavaScript -->
         </div>
-        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px 24px;">
-            <span>💧 Água: 2,5L</span>
-            <span>😴 Sono: 7–8h</span>
-            <span>🏋️ Treino: 3x/semana</span>
+        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px 24px;" id="habitos-lista">
+            <!-- Preenchido pelo JavaScript -->
         </div>
-        <div class="observacao">
-            ⚠️ <strong>Observação:</strong> Sua proteína está em 117g (13g abaixo da meta). Isso pode resultar em perda de gordura mais lenta e leve perda muscular. Recomenda-se adicionar 1 ovo cozido por dia (+6g de proteína) para minimizar esse efeito.
+        <div class="observacao" id="observacao-texto">
+            <!-- Preenchido pelo JavaScript -->
         </div>
         <p class="small" style="margin-top:8px;">⛔ Metas fixas para manter o plano.</p>
     </div>
@@ -240,72 +242,13 @@
         <h2>📋 Plano Alimentar do Dia</h2>
         <p style="color:#4a5a6a; margin-bottom:12px;">Este é o seu plano fixo de refeições.</p>
 
-        <!-- Café da manhã -->
-        <div class="refeicao">
-            <span class="nome">🌅 Café da manhã</span>
-            <div class="itens">2 ovos mexidos + 1 fatia pão integral + 1 fruta + 1 iogurte (170g)</div>
-            <div class="macros">
-                <span>🔥 515 kcal</span>
-                <span>💪 31g prot</span>
-                <span>🍞 54g carb</span>
-                <span>🧈 18g gor</span>
-            </div>
-        </div>
-
-        <!-- Almoço -->
-        <div class="refeicao">
-            <span class="nome">☀️ Almoço</span>
-            <div class="itens">Marmita Liv Up (média) - arroz, feijão, carne</div>
-            <div class="macros">
-                <span>🔥 402 kcal</span>
-                <span>💪 28g prot</span>
-                <span>🍞 51,4g carb</span>
-                <span>🧈 9,2g gor</span>
-            </div>
-        </div>
-
-        <!-- Lanche da tarde -->
-        <div class="refeicao">
-            <span class="nome">🌆 Lanche da tarde</span>
-            <div class="itens">30g leite em pó + 15g aveia + 1 scoop whey</div>
-            <div class="macros">
-                <span>🔥 265 kcal</span>
-                <span>💪 30g prot</span>
-                <span>🍞 28g carb</span>
-                <span>🧈 9g gor</span>
-            </div>
-        </div>
-
-        <!-- Jantar -->
-        <div class="refeicao">
-            <span class="nome">🌙 Jantar</span>
-            <div class="itens">Marmita Liv Up (média) - arroz, feijão, carne</div>
-            <div class="macros">
-                <span>🔥 402 kcal</span>
-                <span>💪 28g prot</span>
-                <span>🍞 51,4g carb</span>
-                <span>🧈 9,2g gor</span>
-            </div>
+        <div id="refeicoes-container">
+            <!-- Preenchido pelo JavaScript -->
         </div>
 
         <!-- Totais fixos do dia -->
-        <div class="totais-dia">
-            <div class="item">
-                <div class="valor">1.584</div>
-                <div class="label">🔥 Calorias</div>
-            </div>
-            <div class="item">
-                <div class="valor">117g</div>
-                <div class="label">💪 Proteína</div>
-            </div>
-            <div class="item">
-                <div class="valor">184,8g</div>
-                <div class="label">🍞 Carboidratos</div>
-            </div>
-            <div class="item">
-                <div class="valor">45,4g</div>
-                <div class="label">🧈 Gordura</div>
-            </div>
+        <div class="totais-dia" id="totais-container">
+            <!-- Preenchido pelo JavaScript -->
         </div>
     </div>
 
@@ -314,26 +257,128 @@
         <h2>📊 Macros por Ingrediente</h2>
         <p class="small">Use esta tabela para fazer substituições e adaptações.</p>
         <table style="width:100%; border-collapse:collapse; font-size:0.9rem; margin-top:8px;">
-            <tr style="background:#e0f0ec;">
-                <th style="text-align:left; padding:8px;">Ingrediente</th>
-                <th style="text-align:center; padding:8px;">kcal</th>
-                <th style="text-align:center; padding:8px;">Prot</th>
-                <th style="text-align:center; padding:8px;">Carb</th>
-                <th style="text-align:center; padding:8px;">Gor</th>
-            </tr>
-            <tr><td style="padding:6px;">1 ovo (50g)</td><td style="text-align:center;">75</td><td style="text-align:center;">6</td><td style="text-align:center;">0</td><td style="text-align:center;">5</td></tr>
-            <tr><td style="padding:6px;">1 fatia pão integral (50g)</td><td style="text-align:center;">120</td><td style="text-align:center;">4</td><td style="text-align:center;">22</td><td style="text-align:center;">1,5</td></tr>
-            <tr><td style="padding:6px;">1 fruta média (banana/maçã)</td><td style="text-align:center;">~100</td><td style="text-align:center;">1</td><td style="text-align:center;">25</td><td style="text-align:center;">0,5</td></tr>
-            <tr><td style="padding:6px;">Iogurte natural (170g)</td><td style="text-align:center;">120</td><td style="text-align:center;">6</td><td style="text-align:center;">12</td><td style="text-align:center;">5</td></tr>
-            <tr><td style="padding:6px;">Leite em pó (30g)</td><td style="text-align:center;">110</td><td style="text-align:center;">10</td><td style="text-align:center;">12</td><td style="text-align:center;">6</td></tr>
-            <tr><td style="padding:6px;">Aveia (15g)</td><td style="text-align:center;">57</td><td style="text-align:center;">2</td><td style="text-align:center;">10</td><td style="text-align:center;">1</td></tr>
-            <tr><td style="padding:6px;">Whey (1 scoop ~15g)</td><td style="text-align:center;">60</td><td style="text-align:center;">12</td><td style="text-align:center;">2</td><td style="text-align:center;">1</td></tr>
-            <tr><td style="padding:6px;">Marmita Liv Up (média)</td><td style="text-align:center;">402</td><td style="text-align:center;">28</td><td style="text-align:center;">51,4</td><td style="text-align:center;">9,2</td></tr>
+            <thead>
+                <tr style="background:#e0f0ec;">
+                    <th style="text-align:left; padding:8px;">Ingrediente</th>
+                    <th style="text-align:center; padding:8px;">kcal</th>
+                    <th style="text-align:center; padding:8px;">Prot</th>
+                    <th style="text-align:center; padding:8px;">Carb</th>
+                    <th style="text-align:center; padding:8px;">Gor</th>
+                    <th style="text-align:center; padding:8px;">Fibras</th>
+                </tr>
+            </thead>
+            <tbody id="ingredientes-tabela">
+                <!-- Preenchido pelo JavaScript -->
+            </tbody>
         </table>
+        <p class="small" style="margin-top:8px;">* Valores de fibra são estimativas médias para cada ingrediente.</p>
     </div>
 
+    <!-- ===== CARREGAR DADOS ===== -->
+    <script src="dados.js"></script>
     <script>
-        // ===== PESO E GORDURA =====
+        // ============================================
+        // FUNÇÕES PARA POPULAR O SITE COM OS DADOS
+        // ============================================
+
+        function carregarDados() {
+            // ---- PERFIL ----
+            document.getElementById('perfil-idade').textContent = dadosPlano.perfil.idade;
+            document.getElementById('perfil-altura').textContent = dadosPlano.perfil.altura;
+            document.getElementById('perfil-dataInicio').textContent = dadosPlano.perfil.dataInicio;
+            document.getElementById('perfil-pesoInicial').textContent = dadosPlano.perfil.pesoInicial;
+            document.getElementById('perfil-gorduraInicial').textContent = dadosPlano.perfil.gorduraInicial;
+            document.getElementById('perfil-pesoAlvo').textContent = dadosPlano.perfil.pesoAlvo;
+            document.getElementById('perfil-gorduraAlvo').textContent = dadosPlano.perfil.gorduraAlvo;
+            document.getElementById('perfil-prazo').textContent = dadosPlano.perfil.prazo;
+
+            // ---- METAS ----
+            const metas = dadosPlano.metas;
+            const metasLista = document.getElementById('metas-lista');
+            metasLista.innerHTML = '';
+            const itensMeta = [
+                { label: 'Calorias', valor: metas.calorias + ' kcal' },
+                { label: 'Proteína', valor: metas.proteina + 'g' },
+                { label: 'Carboidratos', valor: metas.carboidratos + 'g' },
+                { label: 'Gordura', valor: metas.gordura + 'g' },
+                { label: 'Fibras', valor: metas.fibras + 'g', classe: 'meta-fibra' }
+            ];
+            itensMeta.forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = `<strong>${item.label}:</strong> <span class="${item.classe || ''}">${item.valor}</span>`;
+                metasLista.appendChild(div);
+            });
+
+            // ---- HÁBITOS ----
+            const habitosLista = document.getElementById('habitos-lista');
+            habitosLista.innerHTML = '';
+            dadosPlano.habitos.forEach(h => {
+                const span = document.createElement('span');
+                span.textContent = h;
+                habitosLista.appendChild(span);
+            });
+
+            // ---- OBSERVAÇÃO ----
+            document.getElementById('observacao-texto').textContent = dadosPlano.observacao;
+
+            // ---- REFEIÇÕES ----
+            const container = document.getElementById('refeicoes-container');
+            container.innerHTML = '';
+            dadosPlano.refeicoes.forEach(r => {
+                const div = document.createElement('div');
+                div.className = 'refeicao';
+                div.innerHTML = `
+                    <span class="nome">${r.nome}</span>
+                    <div class="itens">${r.itens}</div>
+                    <div class="macros">
+                        <span>🔥 ${r.kcal} kcal</span>
+                        <span>💪 ${r.prot}g prot</span>
+                        <span>🍞 ${r.carb}g carb</span>
+                        <span>🧈 ${r.gor}g gor</span>
+                        <span>🌾 ${r.fibras}g fibras</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            // ---- TOTAIS ----
+            const totais = dadosPlano.totais;
+            const totaisContainer = document.getElementById('totais-container');
+            totaisContainer.innerHTML = '';
+            const itensTotal = [
+                { label: '🔥 Calorias', valor: totais.kcal },
+                { label: '💪 Proteína', valor: totais.prot + 'g' },
+                { label: '🍞 Carboidratos', valor: totais.carb + 'g' },
+                { label: '🧈 Gordura', valor: totais.gor + 'g' },
+                { label: '🌾 Fibras', valor: totais.fibras + 'g' }
+            ];
+            itensTotal.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `<div class="valor">${item.valor}</div><div class="label">${item.label}</div>`;
+                totaisContainer.appendChild(div);
+            });
+
+            // ---- INGREDIENTES ----
+            const tabela = document.getElementById('ingredientes-tabela');
+            tabela.innerHTML = '';
+            dadosPlano.ingredientes.forEach(i => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="padding:6px;">${i.nome}</td>
+                    <td style="text-align:center;">${i.kcal}</td>
+                    <td style="text-align:center;">${i.prot}</td>
+                    <td style="text-align:center;">${i.carb}</td>
+                    <td style="text-align:center;">${i.gor}</td>
+                    <td style="text-align:center;">${i.fibras}</td>
+                `;
+                tabela.appendChild(tr);
+            });
+        }
+
+        // ============================================
+        // PESO E GORDURA (salvos no navegador)
+        // ============================================
         function salvarPeso() {
             const peso = document.getElementById('peso-atual').value;
             if (peso) localStorage.setItem('pesoAtual', peso);
@@ -358,17 +403,22 @@
             setTimeout(() => { document.getElementById('msg-salvo').textContent = ''; }, 3000);
         }
 
-        // ===== DATA =====
+        // ============================================
+        // DATA ATUAL
+        // ============================================
         function atualizarData() {
             const hoje = new Date();
             const data = hoje.toLocaleDateString('pt-BR');
             document.getElementById('data-atual').textContent = data;
         }
 
-        // ===== INICIALIZAÇÃO =====
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             atualizarData();
             carregarPesoGordura();
+            carregarDados();
         });
     </script>
 
