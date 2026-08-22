@@ -21,8 +21,8 @@ const dadosPlano = {
         idade: 40,
         altura: "1,77m",
         dataInicio: "18/08/2026",
-        pesoInicial: "74.3",
-        gorduraInicial: "22.9",
+        pesoInicial: "74,3kg",
+        gorduraInicial: "22,9%",
         pesoAlvo: "69–70",
         gorduraAlvo: "17",
         prazo: "9–12 semanas"
