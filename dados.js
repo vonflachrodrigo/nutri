@@ -33,12 +33,12 @@ const dadosPlano = {
         {
             id: "cafe",
             nome: "🌅 Café da manhã",
-            itens: "2 ovos mexidos + 1 fatia pão integral + 1 fruta + 1 iogurte (170g)",
-            kcal: 515,
-            prot: 31,
-            carb: 54,
-            gor: 18,
-            fibras: 6.5
+            itens: "2 ovos mexidos + 1 fatia pão integral + 1 fruta + 1 iogurte (170g) + 2 fatias queijo mussarela light (30g)",
+            kcal: 597,   // 515 + 82
+            prot: 39.4,  // 31 + 8.4
+            carb: 54.1,  // 54 + 0.1
+            gor: 23.4,   // 18 + 5.4
+            fibras: 6.5  // mantido
         },
         {
             id: "almoco",
@@ -72,7 +72,7 @@ const dadosPlano = {
         }
     ],
 
-    // ----- TOTALS (cálculo automático) -----
+    // ----- TOTAIS (cálculo automático) -----
     get totais() {
         const total = { kcal: 0, prot: 0, carb: 0, gor: 0, fibras: 0 };
         this.refeicoes.forEach(r => {
@@ -94,7 +94,8 @@ const dadosPlano = {
         { nome: "Leite em pó (30g)", kcal: 110, prot: 10, carb: 12, gor: 6, fibras: 0 },
         { nome: "Aveia (15g)", kcal: 57, prot: 2, carb: 10, gor: 1, fibras: 1.5 },
         { nome: "Whey (1 scoop ~15g)", kcal: 60, prot: 12, carb: 2, gor: 1, fibras: 0 },
-        { nome: "Marmita Liv Up (média)", kcal: 402, prot: 28, carb: 51.4, gor: 9.2, fibras: 5 }
+        { nome: "Marmita Liv Up (média)", kcal: 402, prot: 28, carb: 51.4, gor: 9.2, fibras: 5 },
+        { nome: "Queijo mussarela light (30g)", kcal: 82, prot: 8.4, carb: 0.1, gor: 5.4, fibras: 0 }
     ],
 
     // ----- HÁBITOS (apenas para referência) -----
@@ -104,7 +105,7 @@ const dadosPlano = {
         "🏋️ Treino: 3x/semana"
     ],
 
-    // ----- OBSERVAÇÃO (exibida no site) -----
-    observacao: "⚠️ Sua proteína está em 117g (13g abaixo da meta). Isso pode resultar em perda de gordura mais lenta e leve perda muscular. Recomenda-se adicionar 1 ovo cozido por dia (+6g de proteína) para minimizar esse efeito."
+    // ----- OBSERVAÇÃO (removida) -----
+    observacao: ""
 
 };
