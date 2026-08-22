@@ -119,6 +119,11 @@
             font-weight: 600;
             color: #2a7f6e;
         }
+        .dados-pessoais .unidade {
+            font-weight: 400;
+            color: #2a7f6e;
+            margin-left: 2px;
+        }
         .meta-final {
             background: #e0f0ec;
             padding: 12px 16px;
@@ -191,8 +196,8 @@
         <h2>📊 Composição Corporal</h2>
         <div class="dados-pessoais">
             <span>📅 Data início:</span> <span id="perfil-dataInicio"></span>
-            <span>⚖️ Peso inicial:</span> <span id="perfil-pesoInicial"></span> kg
-            <span>🧴 % Gordura inicial:</span> <span id="perfil-gorduraInicial"></span>%
+            <span>⚖️ Peso inicial:</span> <span id="perfil-pesoInicial"></span><span class="unidade"> kg</span>
+            <span>🧴 % Gordura inicial:</span> <span id="perfil-gorduraInicial"></span><span class="unidade"> %</span>
         </div>
 
         <h3>🎯 Meta Final</h3>
@@ -231,8 +236,8 @@
         <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px 24px;" id="habitos-lista">
             <!-- Preenchido pelo JavaScript -->
         </div>
-        <div class="observacao" id="observacao-texto">
-            <!-- Preenchido pelo JavaScript -->
+        <div class="observacao" id="observacao-texto" style="display:none;">
+            <!-- Preenchido pelo JavaScript (se houver observação) -->
         </div>
         <p class="small" style="margin-top:8px;">⛔ Metas fixas para manter o plano.</p>
     </div>
@@ -312,14 +317,22 @@
             // ---- HÁBITOS ----
             const habitosLista = document.getElementById('habitos-lista');
             habitosLista.innerHTML = '';
-            dadosPlano.habitos.forEach(h => {
-                const span = document.createElement('span');
-                span.textContent = h;
-                habitosLista.appendChild(span);
-            });
+            if (dadosPlano.habitos) {
+                dadosPlano.habitos.forEach(h => {
+                    const span = document.createElement('span');
+                    span.textContent = h;
+                    habitosLista.appendChild(span);
+                });
+            }
 
             // ---- OBSERVAÇÃO ----
-            document.getElementById('observacao-texto').textContent = dadosPlano.observacao;
+            const obsElement = document.getElementById('observacao-texto');
+            if (dadosPlano.observacao && dadosPlano.observacao.trim() !== '') {
+                obsElement.style.display = 'block';
+                obsElement.textContent = dadosPlano.observacao;
+            } else {
+                obsElement.style.display = 'none';
+            }
 
             // ---- REFEIÇÕES ----
             const container = document.getElementById('refeicoes-container');
@@ -362,18 +375,20 @@
             // ---- INGREDIENTES ----
             const tabela = document.getElementById('ingredientes-tabela');
             tabela.innerHTML = '';
-            dadosPlano.ingredientes.forEach(i => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="padding:6px;">${i.nome}</td>
-                    <td style="text-align:center;">${i.kcal}</td>
-                    <td style="text-align:center;">${i.prot}</td>
-                    <td style="text-align:center;">${i.carb}</td>
-                    <td style="text-align:center;">${i.gor}</td>
-                    <td style="text-align:center;">${i.fibras}</td>
-                `;
-                tabela.appendChild(tr);
-            });
+            if (dadosPlano.ingredientes) {
+                dadosPlano.ingredientes.forEach(i => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding:6px;">${i.nome}</td>
+                        <td style="text-align:center;">${i.kcal}</td>
+                        <td style="text-align:center;">${i.prot}</td>
+                        <td style="text-align:center;">${i.carb}</td>
+                        <td style="text-align:center;">${i.gor}</td>
+                        <td style="text-align:center;">${i.fibras}</td>
+                    `;
+                    tabela.appendChild(tr);
+                });
+            }
         }
 
         // ============================================
